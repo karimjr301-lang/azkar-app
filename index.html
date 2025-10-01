@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أذكار اليوم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2.9"> <!-- تم تحديث الإصدار -->
+</head>
+<body>
+    
+    <!-- === المكان الصحيح للفيديو === -->
+    <video playsinline autoplay muted loop id="serenity-video-bg" class="hidden">
+        <!-- سيتم تغيير المصدر ديناميكيًا عبر JavaScript -->
+    </video>
+
+    <!-- الصفحة الرئيسية -->
+    <div class="page-container home-container visible" id="home">
+        <main class="home-content-wrapper">
+            <div class="home-header-content">
+                <p class="voice-credit">من كتاب الشيخ اسماعيل المقدم</p>
+                <div class="author-image-container">
+                    <img src="images/OIG1.jpg" alt="الشيخ اسماعيل المقدم" class="author-image-home visible" loading="lazy">
+                </div>
+            </div>
+            <div class="home-sections-container">
+                <!-- === قسم الصباح === -->
+                <div class="home-section morning-section">
+                    <h2 class="home-section-title">أذكار الصباح</h2>
+                    <div class="home-buttons-container">
+                        <button class="home-action-button primary-action" data-serenity-mode="morning" aria-label="الدخول لوضع الصفاء لأذكار الصباح">
+                            <img src="images/leaf.png" alt="الصفاء" class="icon" loading="lazy">
+                            <span>الصفاء</span>
+                        </button>
+                        <button class="home-action-button secondary-action" data-section="morning-0" aria-label="استماع أذكار الصباح">
+                            <img src="images/headphones.png" alt="الاستماع" class="icon" loading="lazy">
+                            <span>الاستماع</span>
+                        </button>
+                        <button class="home-action-button tertiary-action" data-reading-mode="morning" aria-label="الدخول لوضع قراءة أذكار الصباح">
+                            <img src="images/book-reader.png" alt="القراءة" class="icon" loading="lazy">
+                            <span>القراءة</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- === قسم المساء === -->
+                <div class="home-section evening-section">
+                    <h2 class="home-section-title">أذكار المساء</h2>
+                    <div class="home-buttons-container">
+                        <button class="home-action-button primary-action" data-serenity-mode="evening" aria-label="الدخول لوضع الصفاء لأذكار المساء">
+                            <img src="images/leaf.png" alt="الصفاء" class="icon" loading="lazy">
+                            <span>الصفاء</span>
+                        </button>
+                        <button class="home-action-button secondary-action" data-section="evening-0" aria-label="استماع أذكار المساء">
+                            <img src="images/headphones.png" alt="الاستماع" class="icon" loading="lazy">
+                            <span>الاستماع</span>
+                        </button>
+                        <button class="home-action-button tertiary-action" data-reading-mode="evening" aria-label="الدخول لوضع قراءة أذكار المساء">
+                            <img src="images/book-reader.png" alt="القراءة" class="icon" loading="lazy">
+                            <span>القراءة</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- قالب صفحة الذكر الديناميكي -->
+    <div class="page-container prayer-page hidden" id="prayer-template-container">
+        <!-- ==== بداية: الشريط العلوي المُعاد هيكلته ==== -->
+        <nav class="prayer-top-bar">
+            <div class="nav-item">
+                <button class="icon-button" id="template-home-button-top" data-section="home" title="العودة للرئيسية">
+                    <img src="images/home.png" alt="الرئيسية" class="icon">
+                </button>
+                <span class="icon-description">الرئيسية</span>
+            </div>
+            <div class="nav-item">
+                <button class="icon-button" id="decrease-font-button" data-font-action="decrease" aria-label="تصغير حجم الخط" title="تصغير الخط">
+                    <img src="images/font-down.png" alt="تصغير الخط" class="icon" loading="lazy">
+                </button>
+                <span class="icon-description">تصغير</span>
+            </div>
+            <div class="nav-item">
+                <button class="icon-button" id="increase-font-button" data-font-action="increase" aria-label="تكبير حجم الخط" title="تكبير الخط">
+                    <img src="images/font-up.png" alt="تكبير الخط" class="icon" loading="lazy">
+                </button>
+                <span class="icon-description">تكبير</span>
+            </div>
+            <div class="nav-item">
+                <button class="icon-button" id="change-text-color-button" aria-label="تغيير لون الخط" title="تغيير لون الخط">
+                    <img src="images/paint-brush.png" alt="تغيير لون الخط" class="icon" loading="lazy">
+                </button>
+                <span class="icon-description">ألوان</span>
+            </div>
+            <div class="nav-item">
+                <button class="icon-button reading-mode-toggle-button" id="reading-mode-toggle-button" aria-label="تبديل وضع القراءة الكاملة" title="وضع القراءة الكاملة">
+                    <img src="images/book-open.png" alt="وضع القراءة الكاملة" class="icon" loading="lazy">
+                </button>
+                <span class="icon-description">قراءة</span>
+            </div>
+            <div class="nav-item">
+                <button class="icon-button theme-toggle-button" id="theme-toggle-button" aria-label="تغيير مظهر الخلفية" title="تغيير الخلفية">
+                    <img src="images/palette.png" alt="تغيير الخلفية" class="icon icon-palette">
+                    <img src="images/image.png" alt="تغيير الخلفية" class="icon icon-image" style="display: none;">
+                </button>
+                <span class="icon-description color-theme-label">الخلفية</span>
+            </div>
+            <div class="nav-item">
+                <button class="icon-button support-us-button" id="support-us-button" aria-label="ادعمنا" title="ادعمنا">
+                    <img src="images/heart.png" alt="ادعمنا" class="icon" loading="lazy">
+                </button>
+                <span class="icon-description">ادعمنا</span>
+            </div>
+            <div class="nav-item">
+                <button class="icon-button menu-toggle-button" id="menu-toggle-button" aria-label="القائمة" title="القائمة الرئيسية">
+                    <img src="images/ellipsis-v.png" alt="القائمة" class="icon" loading="lazy">
+                </button>
+                <span class="icon-description">القائمة</span>
+            </div>
+        </nav>
+        <!-- ==== نهاية: الشريط العلوي المُعاد هيكلته ==== -->
+
+        <!-- === بداية: حاوية أزرار التحكم الثابتة والقابلة للتحريك === -->
+        <div class="serenity-controls-overlay hidden" id="serenity-controls-overlay">
+            <div class="controls-handle" id="controls-handle">
+                <button class="icon-button serenity-control-button" id="toggle-controls-button" title="طي/فتح الشريط">
+                    <img src="images/arrows-v.png" alt="طي الشريط" class="icon">
+                </button>
+            </div>
+            <div class="controls-wrapper" id="controls-wrapper">
+                <button class="icon-button serenity-control-button" id="floating-play-pause-button" title="تشغيل/إيقاف مؤقت">
+                    <img src="images/serenity-play.png" alt="تشغيل" class="icon icon-play-floating">
+                    <img src="images/serenity-pause.png" alt="إيقاف مؤقت" class="icon icon-pause-floating" style="display: none;">
+                </button>
+                <button class="icon-button serenity-control-button" id="zen-mode-toggle-button" title="إخفاء/إظهار الواجهة">
+                    <img src="images/eye-slash.png" alt="إخفاء الواجهة" class="icon icon-eye-slash">
+                    <img src="images/eye.png" alt="إظهار الواجهة" class="icon icon-eye" style="display: none;">
+                </button>
+                <button class="icon-button serenity-control-button" id="exit-serenity-mode-button" title="الخروج من الوضع الهادئ">
+                    <img src="images/door-open.png" alt="خروج" class="icon">
+                </button>
+            </div>
+        </div>
+        <!-- === نهاية: حاوية أزرار التحكم === -->
+        
+        <main class="prayer-content-wrapper">
+            <div class="prayer-intro-controls">
+                <button class="intro-collapsible-toggle" id="intro-collapsible-toggle" aria-expanded="false" title="إظهار المقدمة">
+                    <img src="images/info-circle.png" alt="إظهار المقدمة" class="icon" loading="lazy">
+                    <span class="intro-toggle-text">المقدمة</span>
+                </button>
+            </div>
+            
+            <div class="serenity-toggle-container">
+                <label class="theme-toggle-switch serenity-mode-toggle" for="serenity-mode-checkbox" title="الوضع الهادئ">
+                    <input type="checkbox" id="serenity-mode-checkbox" class="hidden-checkbox">
+                    <span class="slider">
+                        <span class="knob">
+                            <img src="images/leaf.png" alt="الوضع الهادئ" class="icon">
+                        </span>
+                    </span>
+                </label>
+            </div>
+
+            <div class="intro-text" id="template-intro-wrapper" style="display: none;">
+                 <p id="template-intro-text">الحمد لله حتى حمده والصلاة والسلام على محمد نبيه وعبده وعلى آله وصحبه من بعده. أذكار الصباح ووقتها من بعد صلاة الصبح حتى تطلع الشمس</p>
+            </div>
+            <h2 id="template-title"></h2>
+            <div class="prayer">
+                 <p id="template-text"></p>
+                 <div class="fadel-collapsible" id="fadel-collapsible" style="display: none;">
+                     <button class="fadel-collapsible-toggle" id="fadel-collapsible-toggle" aria-expanded="false">
+                         <img src="images/star.png" alt="فضل الذكر" class="fadel-icon icon" loading="lazy">
+                         <span class="fadel-toggle-text">فضل الذكر ومصدره</span>
+                         <img src="images/chevron-down.png" alt="سهم" class="fadel-chevron icon" loading="lazy">
+                     </button>
+                     <div class="fadel-collapsible-content" id="fadel-collapsible-content">
+                         <p id="template-fadel-text-content"></p>
+                     </div>
+                 </div>
+                 
+                 <div class="audio-controls">
+                    <audio id="template-audio" preload="metadata" src="" class="hidden"></audio>
+                    <div class="custom-audio-player">
+                        
+                        <button class="player-button" id="custom-play-pause-button" aria-label="تشغيل/إيقاف">
+                            <img src="images/play.png" alt="تشغيل" class="icon icon-play">
+                            <img src="images/pause.png" alt="إيقاف" class="icon icon-pause hidden">
+                        </button>
+                        
+                        <div class="timeline-container">
+                            <span class="time-display" id="current-time-display">0:00</span>
+                            <input type="range" class="timeline-slider" id="timeline-slider" value="0" min="0" max="100" step="0.1" aria-label="شريط التقدم">
+                            <span class="time-display" id="duration-display">0:00</span>
+                        </div>
+                        
+                        <div class="volume-container">
+                            <button class="player-button" id="custom-mute-button" aria-label="كتم/إلغاء كتم الصوت">
+                                <img src="images/volume-high.png" alt="صوت" class="icon icon-volume-high">
+                                <img src="images/volume-off.png" alt="كتم" class="icon icon-volume-off hidden">
+                            </button>
+                            <input type="range" class="volume-slider" id="volume-slider" value="1" min="0" max="1" step="0.01" aria-label="شريط الصوت">
+                        </div>
+
+                    </div>
+                </div>
+
+                 <div class="counters-container hidden" id="counters-container">
+                     <div class="repetition-counter-wrapper hidden" id="auto-repetition-counter">
+                         <span class="repetition-label" id="auto-repetition-label">التلقائي:</span>
+                         <button class="repetition-button" id="auto-repetition-button" aria-label="عرض عدد التكرارات التلقائية المتبقية" disabled>
+                             <span class="count" id="auto-repetition-count">0</span>
+                             <img src="images/check-double.png" alt="تكرار تلقائي" class="icon" loading="lazy">
+                         </button>
+                     </div>
+                     <div class="manual-counter-wrapper hidden" id="manual-counter">
+                         <span class="manual-counter-label">اليدوي:</span>
+                         <button class="manual-counter-button" id="manual-counter-button" aria-label="زيادة العد اليدوي وتشغيل الصوت">
+                             <span class="manual-count" id="manual-count-display">0</span>
+                             <img src="images/hand-pointer.png" alt="عد يدوي" class="tap-icon icon" loading="lazy">
+                         </button>
+                     </div>
+                     <div class="reset-counter-wrapper hidden" id="reset-counter">
+                         <button class="reset-counter-button" id="reset-counters-button" aria-label="إعادة تعيين العدادات" title="إعادة تعيين العدادات">
+                             <img src="images/undo.png" alt="إعادة تعيين" class="icon" loading="lazy">
+                         </button>
+                     </div>
+                 </div>
+                  <div class="author-info" id="template-author-wrapper" style="display: none;">
+                     <img src="images/OIG1.jpg" alt="الشيخ" class="author-image-prayer visible" loading="lazy">
+                     <p class="book-credit">بصوت الشيخ اسماعيل المقدم</p>
+                  </div>
+            </div>
+        </main>
+        <div class="prayer-navigation-buttons hidden" id="prayer-nav-buttons-container">
+            <button class="nav-arrow-button prayer-nav-button" id="next-dhikr-button" aria-label="الذكر التالي" title="الذكر التالي">
+                <img src="images/arrow-up.png" alt="الذكر التالي" class="icon" loading="lazy">
+            </button>
+            <button class="nav-arrow-button prayer-nav-button" id="prev-dhikr-button" aria-label="الذكر السابق" title="الذكر السابق">
+                <img src="images/arrow-down.png" alt="الذكر السابق" class="icon" loading="lazy">
+            </button>
+        </div>
+    </div>
+
+    <!-- باقي المحتوى -->
+    <div class="page-container hidden" id="menu-page">
+         <main class="menu-content-wrapper">
+            <button class="close-menu-button" id="close-menu-button" aria-label="إغلاق القائمة">
+                <img src="images/times.png" alt="إغلاق" class="icon" loading="lazy">
+            </button>
+            <h2>القائمة</h2>
+            <div class="accordion">
+                 <div class="accordion-item">
+                     <button class="accordion-header" aria-expanded="false">
+                         <img src="images/info-circle.png" alt="معلومات" class="icon" loading="lazy">
+                         <h3>معلومات عن التطبيق</h3>
+                         <img src="images/chevron-down.png" alt="سهم" class="indicator icon" loading="lazy">
+                     </button>
+                     <div class="accordion-content">
+                         <p>التطبيق مبني على كتاب "أذكار وآداب الصباح والمساء" لفضيلة الشيخ/الدكتور محمد بن أحمد بن اسماعيل المقدم.</p>
+                     </div>
+                 </div>
+                 <div class="accordion-item">
+                     <button class="accordion-header" aria-expanded="false">
+                         <img src="images/book-open.png" alt="كتاب" class="icon" loading="lazy">
+                         <h3>المقدمة</h3>
+                         <img src="images/chevron-down.png" alt="سهم" class="indicator icon" loading="lazy">
+                     </button>
+                     <div class="accordion-content">
+                         <p>
+                             <strong>أذكار وآداب الصباح والمساء</strong><br>
+                             للشيخ/ محمد بن إسماعيل المقدم<br><br>
+                             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br><br>
+                             الحمد لله وحده، وسلام على عباده الذين اصطفى، لا سيما عبده المصطفى، وبعد:<br><br>
+                             فقد قال تعالى: ﴿يَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا ۝ وَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا﴾ (الأحزاب: 41-42).<br>
+                             وقال تعالى: ﴿وَاذْكُرْ رَبَّكَ فِي نَفْسِكَ تَضَرُّعًا وَخِيفَةً وَدُونَ الْجَهْرِ مِنَ الْقَوْلِ بِالْغُدُوِّ وَالْآصَالِ وَلاَ تَكُنْ مِنَ الْغَافِلِينَ﴾ (الأعراف: 205).<br><br>
+                             وقال جل وعلا: ﴿فَسَبِّحْ بِحَمْدِ رَبِّكَ قَبْلَ طُلُوعِ الشَّمْسِ وَقَبْلَ غُرُوبِهَا﴾ (طه: 130).<br><br>
+                             ولما كان ذكر الله عز وجل في الصباح والمساء من الوظائف العظيمة التي أمر الله بها عباده الصادقين، وجاءت الأحاديث النبوية الشريفة ببيان فضائلها الجليلة، كان من المهم جمع هذه الأذكار الصحيحة من خلال التحقيق العلمي، وقد اجتهدنا في جمعها لتكون مرجعًا لكل مسلم حريص على اتباع سنة النبي ﷺ.<br><br>
+                             كما أننا نذكر بأن هذه الأذكار ليست مجرد كلمات تُقال باللسان، بل هي أعمال قلبية تعكس الصلة العميقة بين العبد وربه، وهي وسيلة للحفظ والبركة في اليوم والليل.
+                         </p>
+                     </div>
+                 </div>
+                 <div class="accordion-item">
+                     <button class="accordion-header" aria-expanded="false">
+                         <img src="images/envelope.png" alt="بريد" class="icon" loading="lazy">
+                         <h3>للتواصل والاقتراحات</h3>
+                         <img src="images/chevron-down.png" alt="سهم" class="indicator icon" loading="lazy">
+                     </button>
+                     <div class="accordion-content">
+                         <p>
+                             <a href="https://facebook.com/mr.karimEG" target="_blank" rel="noopener noreferrer">facebook.com/mr.karimEG</a><br>
+                             <a href="mailto:karimJR301@GMAIL.COM">karimJR301@GMAIL.COM</a>
+                         </p>
+                     </div>
+                 </div>
+                 <div class="accordion-item">
+                     <button class="accordion-header" aria-expanded="false" id="support-accordion-header">
+                         <img src="images/heart.png" alt="قلب" class="icon" loading="lazy">
+                         <h3>ادعمنا</h3>
+                         <img src="images/chevron-down.png" alt="سهم" class="indicator icon" loading="lazy">
+                     </button>
+                     <div class="accordion-content">
+                         <p>
+                            لتطوير برامج إسلامية أخرى مجانية وبدون إعلانات، يمكنك المساهمة في استمرار هذا العمل بدعم بسيط منك. جزاكم الله خيرًا.<br><br>
+                            <strong>محفظة أورانج كاش (مصر):</strong><br>
+                            01221633936<br><br>
+                            <strong>PayPal (دولي):</strong><br>
+                            <a href="https://paypal.me/KmFunds0" target="_blank" rel="noopener noreferrer">https://paypal.me/KmFunds0</a>
+                         </p>
+                     </div>
+                 </div>
+                 <div class="accordion-item">
+                     <button class="accordion-header" aria-expanded="false">
+                         <img src="images/sticky-note.png" alt="ملحوظة" class="icon" loading="lazy">
+                         <h3>ملحوظة</h3>
+                         <img src="images/chevron-down.png" alt="سهم" class="indicator icon" loading="lazy">
+                     </button>
+                     <div class="accordion-content">
+                         <p>
+                             هذا البرنامج مجهود شخصي بفضل الله عز وجل.<br>
+                             سيكون بدون اعلانات دائما وابدا ان شاء الله.
+                         </p>
+                     </div>
+                 </div>
+            </div>
+         </main>
+    </div>
+
+    <div class="page-container reading-mode-page hidden" id="reading-mode-page">
+        <header class="reading-mode-header">
+            <nav class="reading-mode-controls">
+                <div class="reading-controls-group right-group">
+                    <button class="icon-button" id="reading-home-button" title="العودة للرئيسية">
+                        <img src="images/home.png" alt="الرئيسية" class="icon" loading="lazy">
+                    </button>
+                </div>
+                
+                <div class="reading-controls-group center-group">
+                    <label class="theme-toggle-switch" for="theme-toggle-checkbox" title="الوضع الداكن/الفاتح">
+                        <input type="checkbox" id="theme-toggle-checkbox" class="hidden-checkbox">
+                        <span class="slider">
+                             <span class="knob">
+                                <img src="images/moon.png" alt="الوضع الداكن" class="icon icon-moon" loading="lazy">
+                                <img src="images/sun.png" alt="الوضع الفاتح" class="icon icon-sun" loading="lazy">
+                             </span>
+                        </span>
+                    </label>
+                    <span id="reading-theme-label">فاتح</span>
+                </div>
+
+                <div class="reading-controls-group left-group">
+                    <button class="icon-button" id="reading-decrease-font-button" data-font-action="decrease" title="تصغير الخط">
+                        <img src="images/font-down.png" alt="تصغير الخط" class="icon" loading="lazy">
+                    </button>
+                    <button class="icon-button" id="reading-increase-font-button" data-font-action="increase" title="تكبير الخط">
+                        <img src="images/font-up.png" alt="تكبير الخط" class="icon" loading="lazy">
+                    </button>
+                    <button class="icon-button" id="reading-index-button" title="فهرس الأذكار">
+                        <img src="images/list.png" alt="الفهرس" class="icon" loading="lazy">
+                    </button>
+                </div>
+            </nav>
+            <h2 id="reading-mode-title"></h2>
+        </header>
+        
+        <main class="reading-mode-content" id="reading-mode-content-area"></main>
+
+        <div class="reading-navigation-buttons hidden" id="reading-nav-buttons-container">
+            <button class="nav-arrow-button reading-scroll-button" id="reading-scroll-up-button" aria-label="تمرير للأعلى" title="تمرير للأعلى">
+                <img src="images/chevron-up.png" alt="تمرير للأعلى" class="icon" loading="lazy">
+            </button>
+            <button class="nav-arrow-button reading-scroll-button" id="reading-scroll-down-button" aria-label="تمرير للأسفل" title="تمرير للأسفل">
+                <img src="images/chevron-down.png" alt="تمرير للأسفل" class="icon" loading="lazy">
+            </button>
+        </div>
+        <button class="nav-arrow-button back-to-top-button hidden" id="back-to-top-button" aria-label="العودة للأعلى" title="العودة للأعلى">
+            <img src="images/arrow-up-circle.png" alt="العودة للأعلى" class="icon" loading="lazy">
+        </button>
+    </div>
+
+    <div class="modal-overlay hidden" id="reading-index-modal-overlay">
+        <div class="modal-content" id="reading-index-modal-content">
+            <div class="modal-header">
+                <h3>فهرس الأذكار</h3>
+                <button class="close-modal-button" id="close-index-modal-button" aria-label="إغلاق الفهرس">×</button>
+            </div>
+            <div class="modal-body" id="reading-index-list"></div>
+        </div>
+    </div>
+
+    <div id="tutorial-overlay" class="hidden">
+        <div id="tutorial-swipe-demo" class="hidden">
+            <span class="swipe-demo-text">الذكر التالي</span>
+            <img src="images/hand-swipe.png" alt="اسحب" class="swipe-demo-hand" loading="lazy">
+            <span class="swipe-demo-text">الذكر السابق</span>
+        </div>
+        <div id="tutorial-tooltip">
+            <div class="tooltip-beak"></div>
+            <p id="tutorial-text"></p>
+            <div class="tutorial-buttons">
+                <button id="tutorial-skip-button">تخطي</button>
+                <div class="tutorial-steps-indicator" id="tutorial-steps-indicator"></div>
+                <button id="tutorial-next-button">التالي</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="morning_data.js"></script>
+    <script src="evening_data.js"></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
